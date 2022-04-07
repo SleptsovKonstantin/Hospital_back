@@ -7,10 +7,15 @@ app.use(cors());
 app.use(express.json());
 
 require("./src/routes/index")(app);
+// require("./src/routes/record")(app);
 
-db.sequelize.sync();  //{force: true} для удаления
+db.sequelize.sync();
+// db.sequelizeNew.sync();   
+// db.sequelize.sync({ force: true }).then(() => {  //для удаления
+//   console.log("Drop and re-sync db.");
+// });
 
-const PORT = 8000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+const port = 8000;
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}.`);
 });
