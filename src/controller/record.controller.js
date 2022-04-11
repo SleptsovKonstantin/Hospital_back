@@ -2,58 +2,130 @@ const db = require("../models");
 
 const Record = db.records;
 
-exports.create = (req, res) => {
+exports.createRecord = (req, res) => {
   console.log("STAAAAAAART<<<<<>>>>>>>");
-  // const { title, description, published } = req.body;
-  // if (name && description && published) {
-  // const newRecord = {
-  //   name: "",
-  //   doctor: "",
-  //   data: "",
-  //   complaint: ""
-  // };
-
   const { name, doctor, data, complaint } = req.body;
-  console.log(req.body);
-  const newRecord = {
-    name,
-    doctor,
-    data,
-    complaint,
-  };
-  Record.create(newRecord)
+  if (name && doctor && data && complaint) {
+    const newRecord = {
+      name,
+      doctor,
+      data,
+      complaint,
+    };
+    Record.create(newRecord)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res
+          .status(400)
+          .send({ message: `id is not in the database-----${err}` });
+      });
+  } else {
+    res.send({
+      message: `Create new task was failing, because body is empty. Please check the data you send.`,
+    });
+  }
+};
+
+exports.findAllRecord = (req, res) => {
+  Record.findAll({
+    order: ["id"],
+  })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
-      res.status(400).send({ message: `id is not in the database-----${err}` });
+      res.status(400).send({ message: `id is not in the database ${err}` });
     });
-  // } else {
-  //   res.send({
-  //     message: `Create new task was failing, because body is empty. Please check the data you send.`,
-  //   });
-  // }
 };
 
-// exports.findAll = (req, res) => {
-//   Record.findAll({
-//     order: ["id"],
-//   })
-//     .then((data) => {
-//       res.send(data);
-//     })
-//     .catch((err) => {
-//       res.status(400).send({ message: `id is not in the database` });
-//     });
-// };
+exports.updateRecord = (req, res) => {
+  const body = req.body;
+  const { id } = body;
+  if (
+    id &&
+    (body.hasOwnProperty("name") ||
+      body.hasOwnProperty("doctor") ||
+      body.hasOwnProperty("data") ||
+      body.hasOwnProperty("complaint"))
+  ) {
+    Record.update(body, { where: { id } }).then((result) => {
+      if (result == 1) {
+        Record.findAll({
+          order: [["id"]],
+        })
+          .then((data) => {
+            res.send(data);
+          })
+          .catch((err) => {
+            res.send({ message: `Error` });
+          });
+      } else {
+        res.send({
+          message: `id=${id} not found in database. Check if id is correct`,
+        });
+      }
+    });
+  } else {
+    res.send({
+      message: `id=${id} is empty.`,
+    });
+  }
+};
 
-// exports.deleteOne = (req, res) => {
-//   const { id } = req.query;
-//   Record.destroy({ where: { id } })
-//     .then(() => {
-//       res.send(`удалено`);
-//     })
-//     .catch((err) => {
-//       res.send({ message: `Error.you need to enter a number` });
-//     });
-// };
+exports.deleteOneRecord = (req, res) => {
+  const { id } = req.query;
+  Record.destroy({ where: { id } })
+    .then(() => {
+      res.send(`удалено`);
+    })
+    .catch((err) => {
+      res.send({ message: `Error.you need to enter a number` });
+    });
+};
+
+exports.sortRecords = (req, res) => {
+  const body = req.body;
+  const field = Object.keys(body).length != 0 ? Object.keys(body) : ["id"];
+  body[field] ? field.push(body[field]) : field.push("ASC");
+  Record.findAll({
+    order: [field],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(400).send({
+        message: `Error. 
+        invalid ASC or DESC specified => ${err}`,
+      });
+    });
+};
+
+exports.filterRecords = (req, res) => {
+  const body = req.query;
+  if (
+    body.hasOwnProperty("id") ||
+    body.hasOwnProperty("name") ||
+    body.hasOwnProperty("doctor") ||
+    body.hasOwnProperty("data") ||
+    body.hasOwnProperty("complaint") ||
+    body.hasOwnProperty("createdAt") ||
+    body.hasOwnProperty("updatedAt")
+  ) {
+    Record.findAll({ where: body })
+      .then((data) => {
+        if (data.length !== 0) {
+          res.send(data);
+        } else {
+          res.send({ message: `Error. invalid  value` });
+        }
+      })
+      .catch((err) => {
+        res.status(400).send({ message: `invalid key. Error => ${err}` });
+      });
+  } else {
+    res.status(400).send({ message: `Error. you didn't send data` });
+  }
+};

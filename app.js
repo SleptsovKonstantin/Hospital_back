@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 require("./src/routes/index")(app);
-// require("./src/routes/record")(app);
+require("./src/routes/record")(app);
 
 db.sequelize.sync();
 // db.sequelizeNew.sync();
