@@ -1,9 +1,8 @@
 const db = require("../models");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
-
+const saltRounds = process.env.SALT_ROUNDS;
 const jwt = require("jsonwebtoken");
-const privateKey = "Secret_Key";
+const privateKey = process.env.SECRET_KEY;
 
 const User = db.tutorials;
 
