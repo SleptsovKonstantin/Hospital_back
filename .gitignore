@@ -106,3 +106,6 @@ dist
 db.config.js
 
 /src
+
+seeders
+migrations
