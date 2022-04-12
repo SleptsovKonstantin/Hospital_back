@@ -2,21 +2,26 @@
   "name": "hospital_back",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+  "homepage": "https://github.com/SleptsovKonstantin/Hospital_back#readme",
+  "bugs": {
+    "url": "https://github.com/SleptsovKonstantin/Hospital_back/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SleptsovKonstantin/Hospital_back.git"
   },
-  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SleptsovKonstantin/Hospital_back/issues"
+  "author": "",
+  "main": "app.js",
+  "scripts": {
+    "db:create": "sequelize db:create",
+    "db:g:migrate": "sequelize migration:generate --name",
+    "db:g:seed": "sequelize seed:generate --name",
+    "db:migrate": "sequelize db:migrate",
+    "db:seeds": "sequelize db:seed:all",
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/SleptsovKonstantin/Hospital_back#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
@@ -27,6 +32,7 @@
     "nodemon": "^2.0.15",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.18.0"
+    "sequelize": "^6.18.0",
+    "sequelize-cli": "^6.4.1"
   }
 }
