@@ -8,6 +8,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     data: {
       type: Sequelize.STRING,
+      // type: Sequelize.DATE
     },    
     complaint: {
       type: Sequelize.STRING,

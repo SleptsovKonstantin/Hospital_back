@@ -6,7 +6,7 @@ module.exports = (app) => {
   router.get("/findAllRecord", recordControllers.findAllRecord);
   router.patch("/updateRecord", recordControllers.updateRecord);
   router.delete("/deleteOneRecord", recordControllers.deleteOneRecord);
-  router.get("/sortRecords", recordControllers.sortRecords);
+  router.post("/sortRecords", recordControllers.sortRecords);
   router.get("/filterRecords", recordControllers.filterRecords);
   
 
