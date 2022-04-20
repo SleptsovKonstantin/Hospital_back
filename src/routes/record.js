@@ -7,7 +7,7 @@ module.exports = (app) => {
   router.patch("/updateRecord", recordControllers.updateRecord);
   router.delete("/deleteOneRecord", recordControllers.deleteOneRecord);
   router.post("/sortRecords", recordControllers.sortRecords);
-  router.get("/filterRecords", recordControllers.filterRecords);
+  router.post("/filterRecords", recordControllers.filterRecords);
   
 
   app.use("/api/records", router);

@@ -110,31 +110,43 @@ exports.sortRecords = (req, res) => {
             });
         });
 };
+
 const { Op } = require("sequelize");
 
 exports.filterRecords = (req, res) => {
-    const body = req.query;
-    // if (
-    //     body.hasOwnProperty("id") ||
-    //     body.hasOwnProperty("name") ||
-    //     body.hasOwnProperty("doctor") ||
-    //     body.hasOwnProperty("data") ||
-    //     body.hasOwnProperty("complaint")
-    //     // body 
-    // ) {
-        // Record.findAll({ where: body})
-        Record.findAll({ where: { [Op.lte]: { data: "2022 - 04 - 19" } } })
-            .then((data) => {
-                if (data.length !== 0) {
-                    res.send(data);
-                } else {
-                    res.send({ message: `Error. invalid  value` });
-                }
-            })
-            .catch((err) => {
-                res.status(400).send({ message: `invalid key. Error => ${err}` });
-            });
-    // } else {
-    //     res.status(400).send({ message: `Error. you didn't send data` });
-    // }
+    const body = req.body;
+
+    const { valueInputFilterWith, valueInputFilterOn } = body;
+
+    const bodyObj = {};
+
+    if (valueInputFilterWith !== "" && valueInputFilterOn == "") {
+        console.log("1111+++++++++");
+        bodyObj[Op.gte] = valueInputFilterWith;
+    }
+    if (valueInputFilterWith == "" && valueInputFilterOn !== "") {
+        console.log("2222+++++++++");
+        bodyObj[Op.lte] = valueInputFilterOn;
+    }
+    if (valueInputFilterWith !== "" && valueInputFilterOn !== "") {
+        console.log("3333+++++++++");
+        bodyObj[Op.between] = [valueInputFilterWith, valueInputFilterOn];
+    }
+
+    Record.findAll({
+        where: {
+            data: bodyObj,
+        }
+    })
+        .then((data) => {
+            if (data.length !== 0) {
+                res.send(data);
+            } else {
+                res.send({ message: `Error. invalid  value` });
+            }
+        })
+        .catch((err) => {
+            res.status(400).send({ message: `invalid key. Error => ${err}` });
+    });
+
 };
