@@ -4,6 +4,7 @@ module.exports = (app) => {
   const passwordCheck = require("../middleware/upload");
 
   router.post("/create", passwordCheck, tutorialControllers.create);
+  router.post("/login", tutorialControllers.login);
 
   app.use("/api/user", router);
 };
