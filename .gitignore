@@ -104,7 +104,4 @@ dist
 .tern-port
 
 # my_project 
-db.config.js
-.env
-/src
 
