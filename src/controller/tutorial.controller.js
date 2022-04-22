@@ -34,3 +34,21 @@ exports.create = async (req, res) => {
     });
   }
 };
+
+exports.login = async (req, res) => {
+  const { login, password } = req.body;
+  const user = await User.findOne({ where: { login } });
+  if (user !== null) {
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (result) {
+        const newToken = createToken(login);
+        const user = jwt.verify(newToken, privateKey);
+        res.send({ newToken, user });
+      } else {
+        res.send(result);
+      }
+    });
+  } else {
+    res.send({ user })
+  }
+};
