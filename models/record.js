@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     data: DataTypes.STRING,
     complaint: DataTypes.STRING,
     user: DataTypes.STRING
-  }, {
+  }, 
+  {
     sequelize,
     modelName: 'Record',
   });
