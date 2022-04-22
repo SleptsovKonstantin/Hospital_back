@@ -20,6 +20,9 @@ module.exports = {
       complaint: {
         type: Sequelize.STRING
       },
+      user: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
