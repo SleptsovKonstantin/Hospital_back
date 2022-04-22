@@ -22,7 +22,8 @@ exports.create = async (req, res) => {
     User.create(newUser)
       .then((data) => {
         const newToken = createToken(login);
-        res.send({ newToken });
+        const user = jwt.verify(newToken, privateKey);
+        res.send({ newToken, user });
       })
       .catch((err) => {
         res.status(400).send({ message: `invalid key ${err}` });
@@ -41,16 +42,14 @@ exports.login = async (req, res) => {
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {
         const newToken = createToken(login);
-        console.log(newToken);
-        res.send({ newToken });
+        const user = jwt.verify(newToken, privateKey);
+        res.send({ newToken, user });
       } else {
-        console.log(result);
         res.send(result);
       }
     });
   } else {
-    console.log(user);
-    res.send( {user} )
+    res.send({ user })
   }
 };
 

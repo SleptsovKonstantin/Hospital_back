@@ -9,6 +9,5 @@ module.exports = (app) => {
   router.post("/sortRecords", recordControllers.sortRecords);
   router.post("/filterRecords", recordControllers.filterRecords);
   
-
   app.use("/api/records", router);
 };

@@ -11,10 +11,6 @@ require("./src/routes/index")(app);
 require("./src/routes/record")(app);
 
 db.sequelize.sync();
-// db.sequelizeNew.sync();
-// db.sequelize.sync({ force: true }).then(() => {  //для удаления
-//   console.log("Drop and re-sync db.");
-// });
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

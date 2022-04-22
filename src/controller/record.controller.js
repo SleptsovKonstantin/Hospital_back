@@ -1,16 +1,17 @@
 const db = require("../models");
+const { Op } = require("sequelize");
 
 const Record = db.records;
 
 exports.createRecord = (req, res) => {
-    console.log("STAAAAAAART<<<<<>>>>>>>");
-    const { name, doctor, data, complaint } = req.body;
-    if (name && doctor && data && complaint) {
+    const { name, doctor, data, complaint, user } = req.body;
+    if (name && doctor && data && complaint && user) {
         const newRecord = {
             name,
             doctor,
             data,
             complaint,
+            user
         };
         Record.create(newRecord)
             .then((data) => {
@@ -19,7 +20,7 @@ exports.createRecord = (req, res) => {
             .catch((err) => {
                 res
                     .status(400)
-                    .send({ message: `id is not in the database-----${err}` });
+                    .send({ message: `${err}` });
             });
     } else {
         res.send({
@@ -29,7 +30,9 @@ exports.createRecord = (req, res) => {
 };
 
 exports.findAllRecord = (req, res) => {
+    const { login } = req.query;
     Record.findAll({
+        where: { user: login },
         order: ["id"],
     })
         .then((data) => {
@@ -42,7 +45,7 @@ exports.findAllRecord = (req, res) => {
 
 exports.updateRecord = (req, res) => {
     const body = req.body;
-    const { id } = body;
+    const { id, user } = body;
     if (
         id &&
         (body.hasOwnProperty("name") ||
@@ -53,6 +56,7 @@ exports.updateRecord = (req, res) => {
         Record.update(body, { where: { id } }).then((result) => {
             if (result == 1) {
                 Record.findAll({
+                    where: { user: user },
                     order: [
                         ["id"]
                     ],
@@ -77,10 +81,11 @@ exports.updateRecord = (req, res) => {
 };
 
 exports.deleteOneRecord = (req, res) => {
-    const { id } = req.query;
+    const { id, user } = req.query;
     Record.destroy({ where: { id } })
         .then(() => {
             Record.findAll({
+                where: { user: user },
                 order: ["id"],
             })
                 .then((data) => {
@@ -88,16 +93,41 @@ exports.deleteOneRecord = (req, res) => {
                 })
         })
         .catch((err) => {
-            res.send({ message: `Error.you need to enter a number` });
+            res.send({ message: `Error.you need to enter a number. Error: ${err}` });
         });
 };
 
 exports.sortRecords = (req, res) => {
-    const body = req.body;
-    console.log("body=======>", req.body);
-    const field = Object.keys(body).length != 0 ? Object.keys(body) : ["id"];
-    body[field] ? field.push(body[field]) : field.push("ASC");
+    const field = [];
+    const { user } = req.body;
+
+    if (req.body.hasOwnProperty("name")) {
+        field.push("name");
+        field.push(req.body.name);
+    }
+
+    if (req.body.hasOwnProperty("doctor")) {
+        field.push("doctor");
+        field.push(req.body.doctor);
+    }
+
+    if (req.body.hasOwnProperty("data")) {
+        field.push("data");
+        field.push(req.body.data);
+    }
+
+    if (req.body.hasOwnProperty("complaint")) {
+        field.push("complaint");
+        field.push(req.body.complaint);
+    }
+
+    if (req.body.hasOwnProperty("id")) {
+        field.push("id");
+        field.push(req.body.id);
+    }
+
     Record.findAll({
+        where: { user: user },
         order: [field],
     })
         .then((data) => {
@@ -111,31 +141,27 @@ exports.sortRecords = (req, res) => {
         });
 };
 
-const { Op } = require("sequelize");
-
 exports.filterRecords = (req, res) => {
     const body = req.body;
 
-    const { valueInputFilterWith, valueInputFilterOn } = body;
+    const { valueInputFilterWith, valueInputFilterOn, user } = body;
 
     const bodyObj = {};
 
     if (valueInputFilterWith !== "" && valueInputFilterOn == "") {
-        console.log("1111+++++++++");
         bodyObj[Op.gte] = valueInputFilterWith;
     }
     if (valueInputFilterWith == "" && valueInputFilterOn !== "") {
-        console.log("2222+++++++++");
         bodyObj[Op.lte] = valueInputFilterOn;
     }
     if (valueInputFilterWith !== "" && valueInputFilterOn !== "") {
-        console.log("3333+++++++++");
         bodyObj[Op.between] = [valueInputFilterWith, valueInputFilterOn];
     }
 
     Record.findAll({
         where: {
             data: bodyObj,
+            user: user
         }
     })
         .then((data) => {
@@ -147,6 +173,6 @@ exports.filterRecords = (req, res) => {
         })
         .catch((err) => {
             res.status(400).send({ message: `invalid key. Error => ${err}` });
-    });
+        });
 
 };
