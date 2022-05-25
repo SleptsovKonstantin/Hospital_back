@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
     },    
     complaint: {
       type: Sequelize.STRING,
+    },
+    user: {
+      type: Sequelize.STRING,
     }
   });
 

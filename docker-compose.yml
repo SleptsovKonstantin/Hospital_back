@@ -1,0 +1,32 @@
+version: "3"
+services:
+
+  app:
+    env_file:
+      - .env
+    container_name: backend
+    restart: always
+    build: .
+    # network_mode: host
+    depends_on:
+      - db
+    ports:
+      - "9010:9010"
+
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: postgresNew
+      POSTGRES_USER: konstantinslepcovNew
+      POSTGRES_PASSWORD: user
+    ports:
+      - "5441:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  db:

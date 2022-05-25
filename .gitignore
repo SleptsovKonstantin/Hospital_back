@@ -105,3 +105,6 @@ dist
 
 # my_project 
 
+.env
+src/config
+config/config.js

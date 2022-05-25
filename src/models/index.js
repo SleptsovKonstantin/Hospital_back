@@ -1,9 +1,14 @@
+require("dotenv").config();
+
+const { DB_HOST, LOCAL_PORT} = process.env;
+
 const Sequelize = require("sequelize");
 const dbConfig = require("../config/db.config");
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
+  host: DB_HOST, //'localhost'   'postgresNew', 'konstantinslepcovNew', 'user'
   dialect: dbConfig.dialect,
+  port: Number(LOCAL_PORT),
   operatorsAliases: false,
   pool: {
     max: dbConfig.pool.max,
